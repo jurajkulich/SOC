@@ -29,17 +29,17 @@
 \addcontentsline{toc}{chapter}{Úvod}
 V roku 2015 malo približne 441 milónov ľudí zrakové postihnutie. Z toho bolo 36 milónov ľudí slepých \cite{bourne2017magnitude}. Takíto ľudia môžu použiť namiesto klasického textu Braillovo písmo, avšak drvivá väčšina pomenovaní a názvov je v klasickom písme. Takisto nikde nenájdeme noviny v Braillovom písme.
 
-TODO
+Momentálne nájdeme veľmi málo interaktívnych pomôcok pre takýchto znevýhodnených ľudí. Telefóny môžu používať iba pomocou tzv. funkcie čítanie obrazovky, ktorá im číta obsah obrazovky. Táto funkcia je dobrá, ale pre určité úkony to môže byť zbytočne zdĺhavé a neintuitívne. Takisto na nej nenájdeme manuálny výstup. 
+
 
 Aplikácia beží na systéme Android. Na tomto systéme beží celosvetovo už cez 2 miliardy aktívnych zariadení \cite{ng_2017}. Náš systém beží na minipočítači, na ktorom je platforma Android Things, ktorá je taktiež založená na Androide. Z toho dôvodu môžeme našu aplikáciu implementovať aj na mobilné zariadenia, na ktoré však nemôžeme pripojiť periférie a tak je funkčnosť obmedzená.
 \newpage
 
-\chapter*{Cieľ práce}
-\addcontentsline{toc}{chapter}{Cieľ práce}
-\newpage
+\chapter*{Cieľ a metodika práce}
+\addcontentsline{toc}{chapter}{Cieľ a metodika práce}
+Cieľom tejto práce je teda prototyp, ktorý úmožní čítať články nevidiacim, vypočuť si články, rozpoznať objekty zo snímky vytvorenej fotoaparátom. Tento prototyp môže teda slúžiť ako pomoc nevidiacim.
 
-\chapter*{Metodika práce}
-\addcontentsline{toc}{chapter}{Metodika práce}
+Táto práca začína dvoma teoretickými kapitolami. Prvá sa zaoberá vo všeobecnosti Braillovým písmom a druhá približuje základné zásady Android systému. Tretia kapitola popisuje architektúru a funkčnosť zariadenia. Samotnú implementáciu opisuje štvrtá kapitola. V poslednej kapitole sú opísané výsledky testovania a prezentovaná celková úspešnosť zariadenia. V závere nájdeme zhodnotené dosiahnuté výsledky a návrhy na možné vylepšenia. 
 \newpage
 
 \chapter{Braillovo písmo}
@@ -57,18 +57,31 @@ Základnú sadu tvoria písmená malej abecedy a interpunkčné znamienka. Čís
 	\end{figure}
 \end{center}
 
-Naše písmeno je však z dôvodu elektronického a veľmi lacného prevedenia(približne 19) väčšie ako je národná norma. Napriek tomu je však použiteľné. Na porovnanie, výrobná cena štandardizovaného článku je okolo 30 a je nemožné sa k takým kusom dostať.
-\newpage
-\chapter{Android Things OS}
-Android Things je zjednodušená verzia operačného systému Android prispôsobená pre IoT zariadenia. Je navrhnutý tak aby fungoval v inteligentných zariadeniach, napríklad termostatoch alebo kamerách.
+\section{Rôzne normy a formy Braillovho písma}
+Najpoužívanejšie formy písma sa nazývajú Grade 1 a Grade 2. Vo forme Grade 1 (plnopis) sa slová prepisujú znak po znaku zatiaľ čo pri forme Grade 2 (skratkopis) dokáže jeden znak znamenať viacero hlások. Skratkopis sa u nás nepoužíva ale je používaný najmä v anglicku.  
 
-\section{IoT - Internet of Things}
-Internet of Things, v preklade internet vecí, v informatike označuje sieť fyzických zariadení, vozidiel, domácich spotrebičov a ďalších zariadení, ktoré môžu byť vybavené elektronikou, softvérom, senzormi a sieťovou konektivitou, ktorá týmto zariadeniam umožňuje vzájomné prepojenie a výmenu dát. \cite{karimi2013internet}
-\section{Android OS}
+\begin{center}
+	\begin{figure}[htp]
+		\centering
+		\includegraphics[scale=1]{brailleGrades}
+		\caption{Porovnanie anglického slovesa „can” vo forme 1 a 2}
+	\end{figure}
+\end{center}
+
+Jedným z problémov Braillovho písma je nejednotnosť noriem, ktoré sa výrazne odlišujú. Napríklad medzi českou a slovenskou formou je už v základných písmenách abecedy 7 rozdielov \cite{braille-wiki}. Z dôvodu jednoduchosti a použitia aj slovenského jazyka v ktorom sa skratkopis nepoužíva, v tejto práci používame normu \textit{grade 1}. 
+
+
+\newpage
+\chapter{Android OS}
 Android je open source operačný systém pre mobilné zariadenia vyvíjaný spoločnosťou Google. Je postavený na jadre Linuxu. V tejto kapitole si ukážeme vlastnosti  a princípy tohto systému a spôsoby tvorby aplikácii pre tento systém.
 
-\subsection{Základné princípy}
-\subsubsection{Architektúra systému Android}
+\section{Android Things OS}
+Android Things je zjednodušená verzia operačného systému Android prispôsobená pre IoT zariadenia. Je navrhnutý tak aby fungoval v inteligentných zariadeniach, napríklad termostatoch alebo kamerách.
+
+\section{Základné princípy Android systému}
+V tejto kapitole si priblížime potrebné súčasti pre programovanie pre Android.
+
+\subsection*{Architektúra systému Android}
 
 Architektúra systému Android je rozdelená do niekoľkých vrstiev (Obr. 2.1) pričom každá vrstva využíva služby vrstvy pod ňou. 
 \begin{center}
@@ -99,33 +112,75 @@ Vrstvy začiatkom od spodnej sú \cite{gandhewar2010google}\cite{androiddevelope
 	\item System Applications -- Je to najvyššia vrstva, ktorá poskytuje množstvo základných aplikácií ako sú email, SMS program, kalendár, aplikácie tretích strán a podobne.
 \end{itemize}
 
-\section{Použité technológie}
-Na vývoj hlavného programu bol použitý jazyk Java z dôvodu predchádzajúcich skúseností s týmto jazykom a veľmi rozšírenou komunitou.
+\section{Tvorba aplikácií pre Android OS}
+\subsection*{Softvérové nástroje}
+Pre programovanie pre Android nám stačia nasledovné nástroje:
+\begin{itemize}
+	\item Java JDK -- Obsahuje základné nástroje na vývoj aplikácií pre Java platformu.
+	\item Android SDK -- Poskytuje prístup ku knižniciam Androidu. Obsahuje debugger, Android knižnice, emulátor a dokumentáciu. 
+	\item Android Studio -- Oficiálne vývojové prostredie pre Android. 
+\end{itemize}
 
-Na vývoj softvéru sme použili oficiálne vývojové prostredie od Googlu - Android Studio. Toto prostredie je postavené na vývojovom prostredí IntelliJ IDEA, podporuje dopĺňanie príkazov, refaktoring alebo analýzu kódu. Toto prostredie obsahuje aj emulátor, ktorý slúži ako virtuálne Android zariadenie.
+\subsection*{Android Manifest}
+Základom každej aplikácie je súbor \textit{AndroidManifest.xml}. Je uložený v koreňovom priečinku každej aplikácie. Tento súbor poskytuje všetky dôležité informácie o aplikácii Android systému. Najdôležitejším je atribút \textit{package}, ktorý označuje unikátny názov aplikácie v Android systéme aj v obchode Google Play. Ďalšie dôležité informácie sú \cite{9781118387108}:
+\begin{itemize}
+	\item \textbf{Špecifikácie aplikácie} -- Špecifikuje samotné komponenty aplikácie ako sú aktivity \texttt{<activity>}, služby \texttt{<service>}, content providery \texttt{<provider>} a ďalšie. V tagu \texttt{<application>} ďalej nastavujeme meno aplikácie a ikonu aplikácie v Android zariadení. 
+	
+	V tagu samotnej aktivity nastavujeme meno triedy (parameter \texttt{android:name}), zobrazované meno aktivity (parameter \texttt{android:label}) a často tiež prvok \texttt{<intent-filter>}, ktorý špecifikuje, za akých podmienok sa spustí aktivita.
+	
+	Príklad špecifikácie aplikácie BrailleApplication, ktorá spustí aktivitu \textit{MainActivity} po spustení aplikácie:
+	
+	\begin{verbatim}
+		<application
+		  android:name=".BrailleApplication"
+		  android:label="Braille">
+		
+		  <activity android:name=".ui.main.MainActivity">
+		    <intent-filter>
+		      <action android:name="android.intent.action.MAIN"/>
+		      <category android:name="android.intent.category.LAUNCHER"/>
+		    </intent-filter>
+		  </activity>
+		</application>
+	\end{verbatim}
+	
+	
+	\item \textbf{Zoznam povolení} -- Špecifikuje zoznam povolení, ktoré aplikácia potrebuje na fungovanie. Bez potvrdenia povolenia užívateľom nemôže aplikácia použiť danú funkciu. Jedná sa napríklad o prístup k internetu, zápis do pamäte, prístup ku kamere a podobne.
+	
+	Príklad tagu na povolenie pre používanie internetu: \\
+	\texttt{<uses-permission   android:name="android.permission.INTERNET" />
+	}
+	\item \textbf{Minimálna verzia systému} -- Určuje minimálnu verziu Android systému, potrebnú na správne fungovanie aplikácie. Verzie sa od seba môžu odlišovať novými triedami, metódami alebo parametrami. 
+	
+	Príklad tagu na nastavenie minimálnej verzie systému na verziu 25 (Android 7.1.1): \\
+	\texttt{<uses-sdk android:minSdkVersion="25" />}	
+\end{itemize}
 
-\subsection{Použité knižnice}
-\subsubsection{Butterknife}
-Knižnica Butterknife generuje k prvkom z rozhrania(napr. tlačidlo) štandardizovaný kód, čím nám skracuje dĺžku kódu a robí ho prehľadnejším.
-\subsubsection{OkHttp}
-Knižnica OkHttp slúži na posielanie a prijímanie HTTP a HTTP/2 požiadavok a prijímanie/spracovávanie odpovedí zo servera.
-\subsubsection{Retrofit}
-Retrofit je REST (Representational State Transfer) klient s typovou kontrolou. REST je rozhranie, ktoré definuje metódy pre prístup k dátam - vytvoriť, zmazať, upraviť, získať. Pomocou neho získavame dáta z internetu a ukladáme do našich Java tried.
-\subsubsection{Room}
-Poskytuje abstraktnú vrstvu nad SQL databázou, umožňuje lepší prístup k databáze použitím menšieho množstva kódu a overuje dotazy na databázu.
-\subsubsection{Cloud Vision API}
-Umožnuje zistiť obsah z fotografie. Detekuje skupiny objektov a vecí (napr. rastliny, zvieratá, …) a extrahuje tlačený text.
-\subsubsection{Cloud Speech-To-Text API}
-Konvertuje audio do textu. Slúži na hlasové ovládanie.
-\subsubsection{Cloud Translation API}
-Poskytuje rozhranie na preklad textu. V našom prípade z angličtiny do slovenčiny. Toto API zatiaľ nepodporuje Android a preto posielame požiadavku na server s textom, ktorý chceme preložiť.
+\subsection*{Lokalizácia aplikácie}
+Android funguje na zariadeniach v mnohých regiónoch. Aby sme nemuseli vyvíjať viac aplikácií s rôznymi jazykmi používame lokalizáciu. Lokalizácia sa stará o prispôsobenie textu, obrázkov, čísel alebo meny podľa regiónu použitia. 
+
+Android na takéto zmeny používa prepínanie zdrojov. Zdroje môžu obsahovať rôzne nastavenia pre rôzne prípady ako napr. rozloženie prostredia pre zvislú polohu a horizontálnu polohu telefónu, rozdielne obrázky pre rôzne rozlíšenia, lokalizované reťazce pre rôzne jazyky, atď.
+
+Základné zdroje nájdeme v zložke \texttt{/res/values}. V tejto zložke je automaticky vytvorený súbor \texttt{strings.xml}, ktorý obsahuje reťazce používané v prápade že nie je dostupná žiadna iná lokalizácia. Po pridaní slovenskej lokalizácie sa vytvorí nová zložka \texttt{/res/values-sk-rSK/strings.xml}. Akonáhle bude mať zariadenie nastavené slovenský jazyk, aplikácie bude používať zdroje zo slovenskej lokalizácie. V aplikácii tak nie je vhodné používať konštatné reťazce ale reťazce zo zdrojov. V našom prípade používame slovenskú lokalizáciu pre zvukový výstup zariadenia.
+
+\subsection*{Práca s perifériami}
+Pre prácu s perifériami slúži systémová služba \textit{PeripheralManager}. Pomocou tejto triedy dokážeme nastavovať a ovládať  GPIO piny. Taktiež obsahuje callback na prijímanie signálov z pinov.
 \newpage
 
-\chapter{Architektúra systému BrailleFeeder}
+\chapter{Hardvérová architektúra zariadenia}
+V tejto kapitole si ukážeme architektúru nášho zariadenia. Ukážeme si časti z ktorých sa skladá a ako prispievajú k správnej funkčnosti.
 
 \section{Vývojová doska}
 Mozog zariadenia tvorí HW platforma NXP i.MX7D. Táto platforma obsahuje množstvo zberníc a pinov na pripojenie rôznych zariadení. Tu využívame USB na pripojenie mikrofónu, RJ45/Wi-Fi na pripojenie k internetu, konektor na pripojenie fotoaparátu, 3.5mm jack na pripojenie audio zariadení a univerzálne piny GPIO na pripojenie ostatných potrebných periférií(tlačidlá, cievky, …).
-Táto platforma má procesor ARM Cortex-A7 - 1GHz, 512MB pamäte RAM a 4GB internú pamäť. Fotoaparát sa pripája pomocou MIPI CSI rozhrania.
+Táto platforma má procesor ARM Cortex-A7 - 1GHz, 512MB pamäte RAM a 4GB internú pamäť. Fotoaparát sa pripája pomocou MIPI CSI rozhrania. Operačný systém tejto platformy je Android Things.
+
+\begin{center}
+	\begin{figure}[htp]
+		\centering
+		\includegraphics{brailleblock}
+		\caption{Bloková schéma zariadenia}
+	\end{figure}
+\end{center}
 
 \section{Časti elektroniky}
 \subsubsection{Elektronické Braillovo písmeno}
@@ -140,13 +195,13 @@ Slúžia na napájanie dosky a modulu s cievkami(Braillovo písmeno). Používam
 General-purpose input/output - sú digitálne piny, ktoré dokážu slúžiť aj ako vstupy aj výstupy podľa potreby. Používame ich ako výstupy pre posielanie impulzov do cievok a ako vstupy pri tlačidlách. 
 
 \subsubsection{USB vstup}
-Slúži na pripojenie USB mikrofónu
+Slúži na pripojenie USB mikrofónu.
 
 \subsubsection{3.5mm jack}
-Slúži na pripojenie audio zariadení pre hlasový výstup
+Slúži na pripojenie audio zariadení pre hlasový výstup.
 
 \section{Režimy použitia}
-So systémom môžeme pracovať vo viacerých režimoch
+Naše zariadenie dokáže pracovať	 vo viacerých režimoch:
 \begin{enumerate}
 \item Prehrávanie článkov na Braillovom písmene -- článok sa rozdelí na písmená a každé písmeno sa skovertuje na príslušný kód, podľa ktorého sa zobrazí výstupe.
 \item Prehrávanie článkov cez reproduktor.
@@ -170,6 +225,58 @@ So systémom môžeme pracovať vo viacerých režimoch
 \end{itemize}
 \end{enumerate}
 
+\chapter{Softvérová architektúra zariadenia}
+Táto kapitola popisuje softvérovú časť zariadenia, použité technológie a zámery.
+
+\section{Použité technológie}
+Na vývoj hlavného programu bol použitý jazyk Java z dôvodu predchádzajúcich skúseností s týmto jazykom a veľmi rozšírenou komunitou. Pri programovaní sme sa snažili dodržať všetky koncepty objektovo-orientovaného programovania ako sú dedičnosť, abstrakcia, zapuzdrenosť a polymorfizmus. \\
+
+Použili sme oficiálne vývojové prostredie od Googlu - Android Studio. Toto prostredie je postavené na vývojovom prostredí IntelliJ IDEA a podporuje dopĺňanie príkazov, refaktoring alebo analýzu kódu. Toto prostredie obsahuje aj emulátor, ktorý slúži ako virtuálne Android zariadenie. Na ukladanie údajov používame SQL databázu.
+
+\subsection*{Použité knižnice}
+\subsubsection{Butterknife}
+Knižnica Butterknife generuje k prvkom z rozhrania(napr. tlačidlo) štandardizovaný kód, čím nám skracuje dĺžku kódu a robí ho prehľadnejším.
+\subsubsection{OkHttp}
+Knižnica OkHttp slúži na posielanie a prijímanie HTTP a HTTP/2 požiadavok a prijímanie/spracovávanie odpovedí zo servera.
+\subsubsection{Retrofit}
+Retrofit je REST (Representational State Transfer) klient s typovou kontrolou. REST je rozhranie, ktoré definuje metódy pre prístup k dátam - vytvoriť, zmazať, upraviť, získať. Pomocou neho získavame dáta z internetu a ukladáme do našich Java tried.
+\subsubsection{Room}
+Poskytuje abstraktnú vrstvu nad SQL databázou, umožňuje lepší prístup k databáze použitím menšieho množstva kódu a overuje dotazy na databázu.
+\subsubsection{Cloud Vision API}
+Umožnuje zistiť obsah z fotografie. Detekuje skupiny objektov a vecí (napr. rastliny, zvieratá, …) a extrahuje tlačený text.
+\subsubsection{Cloud Speech-To-Text API}
+Konvertuje audio do textu. Slúži na hlasové ovládanie.
+\subsubsection{Cloud Translation API}
+Poskytuje rozhranie na preklad textu. V našom prípade z angličtiny do slovenčiny. Toto API zatiaľ nepodporuje Android a preto posielame požiadavku na server s textom, ktorý chceme preložiť.
+
+\chapter{Konštrukčná časť}
+\newpage
+
+
+
+\chapter*{Výsledky práce}
+\addcontentsline{toc}{chapter}{Výsledky práce}
+\newpage
+\chapter*{Diskusia}
+\addcontentsline{toc}{chapter}{Diskusia}
+\newpage
+\chapter*{Záver}
+\addcontentsline{toc}{chapter}{Záver}
+\newpage
+\chapter*{Zhrnutie}
+\addcontentsline{toc}{chapter}{Zhrnutie}
+\newpage
+
 \printbibliography[title=Zoznam použitej literatúry]
+\newpage
+
+\chapter*{Zoznam použitých skratiek a symbolov}
+\addcontentsline{toc}{chapter}{Zoznam použitých skratiek a symbolov}
+\begin{table}[!ht]
+	\begin{tabular}{lll}
+		\textbf{skratka} & \textbf{celý názov} & \textbf{vysvetlenie} \\
+		IoT              & Internet of Things  & \makecell{Označuje zariadenia	so sieťovou konektivitou\\ umožňujúce vzájomné prepojenie a výmenu dát}       
+	\end{tabular}
+\end{table}
 
 \end{document}          
