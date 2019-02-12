@@ -2,6 +2,9 @@
 \ProvidesClass{template/socthesis}[2017/01/15 Document class for czech SOC theses]
 \LoadClass[12pt, a4paper, oneside]{book}
 
+\RequirePackage{geometry}
+
+\RequirePackage{indentfirst}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[slovak]{babel}
 \RequirePackage[T1]{fontenc}
@@ -10,13 +13,18 @@
 \RequirePackage{array}
 \RequirePackage{listings}
 \RequirePackage{multicol}
+\RequirePackage{tabularx}
+\RequirePackage{appendix}
+\RequirePackage{float}
+\RequirePackage{adjustbox}
+
+\RequirePackage{layout}
 \RequirePackage{makecell}
 \RequirePackage[bookmarksopen,colorlinks,plainpages=false,linkcolor=black,urlcolor=blue,citecolor=black,filecolor=black,menucolor=black,unicode=true,breaklinks]{hyperref}
 \RequirePackage{csquotes}
 \RequirePackage[backend=bibtex,bibstyle=numeric,sorting=none,date=long,dateabbrev=false,texencoding=utf8,bibencoding=utf8,style=iso-numeric]{biblatex}
 %\RequirePackage[backend=bibtex, style=iso-authoryear, autolang=other, sortlocale=sk_SK, bibencoding=UTF8]{biblatex}
 \RequirePackage{caption}
-
 
 %%%%%% PŘÍKAZY
 \newcommand{\B}{\textbf} % tučné písmo
@@ -26,12 +34,13 @@
 
 % posun textu kvůli kroužkové vazbě
 %\addtolength{\textwidth}{mm}
-\addtolength{\hoffset}{4mm}
+%\addtolength{\hoffset}{10mm}
 
 \setlength{\intextsep}{5mm} % nastavení mezery okolo obrázků
-\marginparsep=15pt
-\linespread{1.3}
+%\marginparsep=15pt
+\linespread{1.5}
 \unitlength=1mm % nastavení volby jednotek
+
 
 %%%%%% ROVNICE
 \DeclareCaptionType{listedequation}[Rovnice][Seznam rovnic]
@@ -52,6 +61,7 @@
 \def\mentor#1{\def\@mentor{#1}}
 \def\mentorstatement#1{\def\@mentorstatement{#1}}
 \def\placefooter#1{\def\@placefooter{#1}}
+\def\organizer#1{\def\@organizer{#1}}
 
 \RequirePackage{xstring}
 \newcommand{\field}[1]{%
@@ -86,8 +96,9 @@
 %%% Titulní strany
 \renewcommand{\maketitle}{%
 	\pagestyle{empty}
-	\voffset = -20mm % posun začátku textu výš
+	\voffset = -10mm % posun začátku textu výš
     \enlargethispage{40mm} % zvětší oblast tisku pro tuto stránku
+    %\addtolength{\hoffset}{10mm}
 	\begin{center}
 		{\large \B{\@school}} \\
 		{\large \B{\@address}} \\
@@ -109,7 +120,7 @@
 	
 	\noindent\begin{tabular}{lll} % [t]{@{}} 
 		2019 \\
-		Nové Mesto nad Váhom \\
+		Stará Turá \\
 	\end{tabular}
 	\hfill
 	\begin{tabular}[t]{r@{}}  
@@ -122,39 +133,40 @@
 	\newpage
 
 	\pagestyle{empty}
-    \enlargethispage{40mm} % zvětší oblast tisku pro tuto stránku
+	\voffset = -10mm % posun začátku textu výš
+	\enlargethispage{40mm} % zvětší oblast tisku pro tuto stránku
 	\begin{center}
-	    {\large \B{STREDOŠKOLSKÁ ODBORNÁ ČINNOSŤ}} \\
-
-		\vspace{40mm}
-
-		{\Large \B{\expandafter\MakeUppercase\expandafter{\@titlesk}}} \\
+		{\large \B{\@school}} \\
+		{\large \B{\@address}} \\ 
+		{\large \B{\@organizer}} \\
+		
+		\vspace{60mm}
+		
+		{\large \B{STREDOŠKOLSKÁ ODBORNÁ ČINNOSŤ}} \\
+		\vspace{5mm}
+		\normalsize \B{Číslo odboru: 11} \\
+		
+		\normalsize \B{Názov odboru: Informatika} \\
+		
 		\vspace{20mm}
-
+		
+		{\LARGE \B{\@titlesk}} \\
+		
 		\vfill
-
-        \begin{table}[h]
-        \setlength{\tabcolsep}{12pt}
-        \renewcommand{\arraystretch}{1.5}
-        \linespread{1.0}
-		\begin{tabularx}{\textwidth}{r >{\raggedright}p{90mm} c}
-		\large \B{AUTOR} & \large \B{\@author} & \\
-		\large \B{ŠKOLA} & \large \B{\@school} & \\
-		\large \B{KRAJ} & \large \B{\@region} & \\
-		\large \B{ŠKOLITEL} & \large \B{\@mentor} & \\
-		\large \B{OBOR} & \large \B{\@field} & \\
-		\end{tabularx}
-		\setlength{\tabcolsep}{6pt}
-        \renewcommand{\arraystretch}{1.0}
-		\end{table}
-
-		\vspace{10mm}
-
-		{\large \B{\@placefooter}}
 	\end{center}
+	
+	\noindent\begin{tabular}{lll} % [t]{@{}} 
+		2019 \\
+		Stará Turá \\
+	\end{tabular}
+	\hfill
+	\begin{tabular}[t]{r@{}}  
+		Riešitelia \\
+		\B\@author \\
+		Ročník štúdia: štvrtý \\	
+	\end{tabular}
+
 	\newpage
-	\voffset = 0mm
-	\pagestyle{plain}
 	
 }
 
@@ -166,7 +178,7 @@
 	\vfill
 
 	\section*{Čestné vyhlásenie}
-	Vyhlasujem, že svoju prácu na tému \It{\@titlesk} som vypracoval samostatne s~použitím odbornej literatúry a~ďalších informačných zdrojov, ktoré sú všetky citované v~práci a~uvedené v~zozname literatúry na~konci práce.
+	Vyhlasujem, že svoju prácu na tému \It{\@titlesk} som vypracoval samostatne s~použitím odbornej literatúry a~ďalších informačných zdrojov, ktoré sú všetky citované v~práci a~uvedené v~zozname literatúry na~konci práce. Prácu  som  neprihlásil  a ani  neprezentoval v žiadnej inej súťaži, ktorá je pod gestorstvom MŠMVVaŠ SR. Som si vedomý dôsledkov, ak uvedené údaje nie sú pravdivé.
 
 	\vspace{15mm}
 
